@@ -8,10 +8,10 @@ import (
 	"time"
 )
 
-// PrometheusConfig provides a container with config parameters for the
+// ExporterConfig provides a container with config parameters for the
 // Prometheus Exporter
 
-type PrometheusConfig struct {
+type ExporterConfig struct {
 	namespace     string
 	Registry      metrics.Registry // Registry to be exported
 	subsystem     string
@@ -22,8 +22,8 @@ type PrometheusConfig struct {
 
 // NewPrometheusProvider returns a Provider that produces Prometheus metrics.
 // Namespace and subsystem are applied to all produced metrics.
-func NewPrometheusProvider(r metrics.Registry, namespace string, subsystem string, promRegistry prometheus.Registerer, FlushInterval time.Duration) *PrometheusConfig {
-	return &PrometheusConfig{
+func NewPrometheusProvider(r metrics.Registry, namespace string, subsystem string, promRegistry prometheus.Registerer, FlushInterval time.Duration) *ExporterConfig {
+	return &ExporterConfig{
 		namespace:     namespace,
 		subsystem:     subsystem,
 		Registry:      r,
@@ -33,7 +33,7 @@ func NewPrometheusProvider(r metrics.Registry, namespace string, subsystem strin
 	}
 }
 
-func (c *PrometheusConfig) flattenKey(key string) string {
+func (c *ExporterConfig) flattenKey(key string) string {
 	key = strings.Replace(key, " ", "_", -1)
 	key = strings.Replace(key, ".", "_", -1)
 	key = strings.Replace(key, "-", "_", -1)
@@ -41,7 +41,7 @@ func (c *PrometheusConfig) flattenKey(key string) string {
 	return key
 }
 
-func (c *PrometheusConfig) gaugeFromNameAndValue(name string, val float64) {
+func (c *ExporterConfig) gaugeFromNameAndValue(name string, val float64) {
 	key := fmt.Sprintf("%s_%s_%s", c.namespace, c.subsystem, name)
 	g, ok := c.gauges[key]
 	if !ok {
@@ -56,13 +56,13 @@ func (c *PrometheusConfig) gaugeFromNameAndValue(name string, val float64) {
 	}
 	g.Set(val)
 }
-func (c *PrometheusConfig) UpdatePrometheusMetrics() {
+func (c *ExporterConfig) UpdatePrometheusMetrics() {
 	for _ = range time.Tick(c.FlushInterval) {
 		c.UpdatePrometheusMetricsOnce()
 	}
 }
 
-func (c *PrometheusConfig) UpdatePrometheusMetricsOnce() error {
+func (c *ExporterConfig) UpdatePrometheusMetricsOnce() error {
 	c.Registry.Each(func(name string, i interface{}) {
 		switch metric := i.(type) {
 		case metrics.Counter:
