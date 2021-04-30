@@ -16,4 +16,9 @@ jobs:
         with:
           go-version: '^1.16'
       - name: Run Tests
-        run: go test -race ./...
+        run: go -race -coverprofile=coverage.txt -covermode=atomic ./...
+      - name: Report Test Coverage
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage.txt

@@ -188,8 +188,10 @@ Apache License
 
    Copyright 2016 Csergő Bálint github.com/deathowl
 
-   With further modifications in this fork:
+   With rewrite/modifications in this fork:
+
    Copyright 2018 Tenjin, Inc. github.com/tenjin
+   Copyright 2021 GameAnalytics Ltd. github.com/GameAnalytics
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
